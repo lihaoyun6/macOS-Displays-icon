@@ -7,7 +7,7 @@ This project is a icon database of many displays.You can show it in macOS's "Abo
 2. Make sure the image is clean and sharp
 3. Use the "Screen.jpg" as wallpaper
 4. Add some shadows
-5. Put the image in the center and a little lower
+5. Put the image in the center and a little bit lower
 
 ## Rules for naming files
 1. Nameing the icon file by the PID of monitor, e.g. "a0be.icns"
