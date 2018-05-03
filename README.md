@@ -11,5 +11,10 @@
 5. 需要为显示器基座添加适当的阴影
 6. 位置坐标得体适中(正中偏下)
 
+## 文件命名规则
+1. 将显示器图标文件以显示器接口的PID值命名, 例如: "a0be.icns"
+2. 将图标文件放在以显示器制造商VID值命名的文件夹中, 例如: "10ac/a0be.icns"
+3. 将图标的PID值添加入VID文件夹下的"{VID}.pid"文件中, 格式为: "PID值:显示器型号", 例如: "a0be:DELL P2415Q"
+
 ### 样例:
 ![img](https://raw.githubusercontent.com/lihaoyun6/macOS-Displays-icon/master/10ac/a0be.icns)
