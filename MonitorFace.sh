@@ -81,6 +81,7 @@ icon() {
 			echo $downloading
 			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
 			echo $installing
+			mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
 			mv -f /tmp/DisplayProductID-${pid}.icns /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}/
 			echo $hr
 		else
