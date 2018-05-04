@@ -110,8 +110,11 @@ fi
 sys=$(sw_vers -buildVersion|grep -Eo "^[^G]+")
 if [ "$sys" -gt "14" ];then
 	echo $checksip
-	sip=$(csrutil status|awk '{print $NF}')
-	if [ "$sip" = "disabled." ];then
+	sip=$(csrutil status|awk '{print $NF}'|sed 's/\.//g')
+	sip2=$(csrutil status|grep "Filesystem Protections"|awk '{print $NF}')
+	if [ "$sip" = "disabled" ];then
+		icon
+	elif [ "$sip2" = "disabled" ];then
 		icon
 	else
 		echo $disablesip
