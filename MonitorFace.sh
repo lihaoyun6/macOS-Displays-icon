@@ -78,6 +78,7 @@ icon() {
 		valid=$(curl -s $url/${vid}/${vid}.pid|grep -o "${pid}:")
 		if [ x"$valid" = x"${pid}:" ];then
 			echo $text1$i$text2$name$text3
+			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $downloading
 			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
 			echo $installing
