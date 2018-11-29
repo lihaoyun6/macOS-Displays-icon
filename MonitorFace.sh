@@ -1,5 +1,5 @@
 #!/bin/sh
-version=0.2
+version=0.3
 localtext_zh_CN() {
 cat <<EOF
 
@@ -95,7 +95,7 @@ icon() {
 	echo $alldone
 }
 
-add=$(/usr/bin/curl -s cip.cc|grep -o "中国")
+add=$(/usr/bin/curl -s cip.cc|grep -m1 -o "中国")
 if [ x"$add" = x"中国" ];then
 	url="https://coding.net/u/lihaoyun6/p/macOS-Displays-icon/git/raw/master"
 else
