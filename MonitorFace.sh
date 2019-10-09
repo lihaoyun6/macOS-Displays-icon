@@ -109,7 +109,7 @@ else
 	localtext_en_US
 fi
 
-sys=$(sw_vers -buildVersion|grep -Eo "^[^G]+")
+sys=$(sw_vers -buildVersion|grep -Eo "^\d+")
 if [ "$sys" -gt "14" ];then
 	echo $checksip
 	sip=$(csrutil status|awk '{print $NF}'|sed 's/\.//g')
