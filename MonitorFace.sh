@@ -83,6 +83,10 @@ icon() {
 			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
 			echo $installing
 			mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
+			if [ x"$?" != x"0" ];then
+				mount -o rw /
+				mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
+			fi
 			mv -f /tmp/DisplayProductID-${pid}.icns /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}/
 			echo $hr
 		else
