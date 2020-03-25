@@ -22,6 +22,7 @@ EOF
 	text3=" 的图标已找到"
 	downloading="正在下载图标数据..."
 	installing="正在安装图标..."
+	remounting="正在解除写保护..."
 	ntext3=" 的图标未找到"
 	displayname="显示器名称: "
 	displayvid=", 显示器VID: "
@@ -53,6 +54,7 @@ EOF
 	text3=") has been found"
 	downloading="Downloading icon file..."
 	installing="Installing icon file..."
+	remounting="Remounting filesystem writeable..."
 	ntext3=") cannot be found"
 	displayname="Monitor: "
 	displayvid=", VendorID: "
@@ -82,11 +84,10 @@ icon() {
 			echo $downloading
 			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
 			echo $installing
-			mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
-			if [ x"$?" != x"0" ];then
+			if [ $(sw_vers -productVersion|awk -F '.' '{print $2}') -ge 15 ];then
 				mount -o rw /
-				mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
 			fi
+			mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
 			mv -f /tmp/DisplayProductID-${pid}.icns /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}/
 			echo $hr
 		else
