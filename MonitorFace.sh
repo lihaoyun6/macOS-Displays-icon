@@ -85,6 +85,7 @@ icon() {
 			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
 			echo $installing
 			if [ $(sw_vers -productVersion|awk -F '.' '{print $2}') -ge 15 ];then
+				echo $remounting
 				mount -o rw /
 			fi
 			mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
