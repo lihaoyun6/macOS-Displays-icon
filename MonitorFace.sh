@@ -1,11 +1,11 @@
 #!/bin/sh
-version=0.4
+version=0.4.1
 localtext_zh_CN() {
 cat <<EOF
 
 
                        -- MonitorFace --
-                     v$version © lihaoyun6 2018
+                     v$version © lihaoyun6 2020
                 自动识别并安装符合显示器真实外观的图标
               本项目基于本人维护的显示器个性化图标数据库
  欢迎向 👉https://github.com/lihaoyun6/macOS-Displays-icon 提交图标
@@ -28,8 +28,6 @@ EOF
 	displayvid=", 显示器VID: "
 	displaypid=", 显示器PID: "
 	alldone="所有显示器图标已安装完成. 重启或重新拔插显示器即可看到效果."
-	checksip="正在检测SIP状态..."
-	disablesip="为了保证正常写入系统文件夹, 请关闭SIP保护."
 	hr="=================================================================="
 }
 localtext_en_US() {
@@ -60,8 +58,6 @@ EOF
 	displayvid=", VendorID: "
 	displaypid=", ProductID: "
 	alldone="All icon files have been installed. Please replug your monitor."
-	checksip="Checking SIP status..."
-	disablesip="We need write system folders, so please disable SIP."
 	hr="=================================================================="
 }
 icon() {
@@ -88,8 +84,8 @@ icon() {
 				echo $remounting
 				mount -o rw /
 			fi
-			mkdir -p /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}
-			mv -f /tmp/DisplayProductID-${pid}.icns /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-${vid}/
+			mkdir -p $1/DisplayVendorID-${vid}
+			mv -f /tmp/DisplayProductID-${pid}.icns $1/DisplayVendorID-${vid}/
 			echo $hr
 		else
 			echo $text1$i$text2$name$ntext3
@@ -116,17 +112,8 @@ else
 fi
 
 sys=$(sw_vers -buildVersion|grep -Eo "^\d+")
-if [ "$sys" -gt "14" ];then
-	echo $checksip
-	sip=$(csrutil status|awk '{print $NF}'|sed 's/\.//g')
-	sip2=$(csrutil status|grep "Filesystem Protections"|awk '{print $NF}')
-	if [ "$sip" = "disabled" ];then
-		icon
-	elif [ "$sip2" = "disabled" ];then
-		icon
-	else
-		echo $disablesip
-	fi
+elif [ "$sys" -ge 15 ];then
+	icon "/Library/Displays/Contents/Resources/Overrides"
 else
-	icon
+	icon "/System/Library/Displays/Overrides"
 fi
