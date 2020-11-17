@@ -112,7 +112,7 @@ else
 fi
 
 sys=$(sw_vers -buildVersion|grep -Eo "^\d+")
-elif [ "$sys" -ge 15 ];then
+if [ "$sys" -ge 15 ];then
 	icon "/Library/Displays/Contents/Resources/Overrides"
 else
 	icon "/System/Library/Displays/Overrides"
