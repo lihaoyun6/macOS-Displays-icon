@@ -28,6 +28,9 @@ EOF
 	displayvid=", 显示器VID: "
 	displaypid=", 显示器PID: "
 	alldone="所有显示器图标已安装完成. 重启或重新拔插显示器即可看到效果."
+	remounting="正在解除写保护..."
+	checksip="正在检测SIP状态..."
+	disablesip="为了保证正常写入系统文件夹, 请关闭SIP保护."
 	hr="=================================================================="
 }
 localtext_en_US() {
@@ -58,6 +61,9 @@ EOF
 	displayvid=", VendorID: "
 	displaypid=", ProductID: "
 	alldone="All icon files have been installed. Please replug your monitor."
+	remounting="Remounting filesystem writeable..."
+	checksip="Checking SIP status..."
+	disablesip="We need write system folders, so please disable SIP."
 	hr="=================================================================="
 }
 icon() {
@@ -108,8 +114,19 @@ else
 fi
 
 sys=$(sw_vers -buildVersion|grep -Eo "^\d+")
-if [ "$sys" -ge 15 ];then
+if [ "$sys" -ge 20 ];then
 	icon "/Library/Displays/Contents/Resources/Overrides"
+elif [ "$sys" -ge 15 ];then
+	echo $checksip
+	sip=$(csrutil status|awk '{print $NF}'|sed 's/\.//g')
+	sip2=$(csrutil status|grep "Filesystem Protections"|awk '{print $NF}')
+	if [ "$sip" = "disabled" -o "$sip2" = "disabled" ];then
+		echo $remounting
+		mount -o rw /
+		icon "/System/Library/Displays/Contents/Resources/Overrides"
+	else
+		echo $disablesip
+	fi
 else
 	icon "/System/Library/Displays/Overrides"
 fi
