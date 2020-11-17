@@ -20,6 +20,7 @@ EOF
 	text1="第 "
 	text2=" 台显示器: "
 	text3=" 的图标已找到"
+	text4=" 为Apple显示器, 无需安装图标"
 	downloading="正在下载图标数据..."
 	installing="正在安装图标..."
 	remounting="正在解除写保护..."
@@ -53,6 +54,7 @@ EOF
 	text1="The icon of monitor "
 	text2=" ("
 	text3=") has been found"
+	text4=") is an Apple Display"
 	downloading="Downloading icon file..."
 	installing="Installing icon file..."
 	remounting="Remounting filesystem writeable..."
@@ -80,7 +82,7 @@ icon() {
 		pid=$(printf "$pids\n"|sed -n "${i}p")
 		name=$(printf "$edids\n"|sed -n "${i}p"|grep -Eo "fc00.*?0a"|sed "s/^fc00//g"|xxd -r -p)
 		valid=$(curl -s $url/${vid}/${vid}.pid|grep -o "${pid}:")
-		if [ x"$valid" = x"${pid}:" ];then
+		if [ x"$valid" = x"${pid}:"];then
 			echo $text1$i$text2$name$text3
 			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $downloading
@@ -89,10 +91,14 @@ icon() {
 			mkdir -p $1/DisplayVendorID-${vid}
 			mv -f /tmp/DisplayProductID-${pid}.icns $1/DisplayVendorID-${vid}/
 			echo $hr
-		else
+		elif [ x"$valid" != x"${pid}:" -a "$vid" != "610" ];then
 			echo $text1$i$text2$name$ntext3
 			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $welcome
+			echo $hr
+		else
+			echo $text1$i$text2$name$text4
+			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $hr
 		fi
 	done
