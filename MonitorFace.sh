@@ -82,7 +82,7 @@ icon() {
 		pid=$(printf "$pids\n"|sed -n "${i}p")
 		name=$(printf "$edids\n"|sed -n "${i}p"|grep -Eo "fc00.*?0a"|sed "s/^fc00//g"|xxd -r -p)
 		valid=$(curl -s $url/${vid}/${vid}.pid|grep -o "${pid}:")
-		if [ x"$valid" = x"${pid}:"];then
+		if [ x"$valid" = x"${pid}:" ];then
 			echo $text1$i$text2$name$text3
 			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $downloading
