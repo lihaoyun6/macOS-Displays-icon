@@ -80,10 +80,6 @@ icon() {
 			echo $downloading
 			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
 			echo $installing
-			if [ $(sw_vers -productVersion|awk -F '.' '{print $2}') -ge 15 ];then
-				echo $remounting
-				mount -o rw /
-			fi
 			mkdir -p $1/DisplayVendorID-${vid}
 			mv -f /tmp/DisplayProductID-${pid}.icns $1/DisplayVendorID-${vid}/
 			echo $hr
