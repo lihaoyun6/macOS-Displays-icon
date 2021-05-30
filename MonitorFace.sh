@@ -1,11 +1,11 @@
 #!/bin/sh
-version=0.4.1
+version=0.4.2
 localtext_zh_CN() {
 cat <<EOF
 
 
                        -- MonitorFace --
-                     v$version © lihaoyun6 2020
+                     v$version © lihaoyun6 2021
                 自动识别并安装符合显示器真实外观的图标
               本项目基于本人维护的显示器个性化图标数据库
  欢迎向 👉https://github.com/lihaoyun6/macOS-Displays-icon 提交图标
@@ -70,17 +70,29 @@ EOF
 }
 icon() {
 	echo $checkdisplay
-	edids=$(ioreg -lw0|grep IODisplayEDID|grep -o "<.*>"|sed "s/[<>]//g")
-	vids=$(printf "%x\n" $(ioreg -l | grep "DisplayVendorID"|awk '{print $NF}'))
-	pids=$(printf "%x\n" $(ioreg -l | grep "DisplayProductID"|awk '{print $NF}'))
-	num=$(echo $vids|awk '{print NF}')
+	AS=$(sysctl -n machdep.cpu.brand_string|grep Apple|wc -l)
+	if [ $AS = "1" ];then
+		vids=$(printf "%x\n" $(ioreg -l|grep -i "DisplayAttributes"|grep -Eo "\"LegacyManufacturerID\"=\d*"|awk -F'=' '{print $NF}'))
+		pids=$(printf "%x\n" $(ioreg -l|grep -i "DisplayAttributes"|grep -Eo "\"ProductID\"=\d*"|awk -F'=' '{print $NF}'))
+		names=$(ioreg -l|grep -i "DisplayAttributes"|grep -Eo "\"ProductName\"=\"[^\"]*"|awk -F'="' '{print $NF}')
+		num=$(echo $vids|awk '{print NF}')
+	else
+		edids=$(ioreg -lw0|grep IODisplayEDID|grep -o "<.*>"|sed "s/[<>]//g")
+		vids=$(printf "%x\n" $(ioreg -l | grep "DisplayVendorID"|awk '{print $NF}'))
+		pids=$(printf "%x\n" $(ioreg -l | grep "DisplayProductID"|awk '{print $NF}'))
+		num=$(echo $vids|awk '{print NF}')
+	fi
 	echo $finded$num$displays
 	echo $checkdatabase
 	echo $hr
 	for i in $(seq 1 $num);do
 		vid=$(printf "$vids\n"|sed -n "${i}p")
 		pid=$(printf "$pids\n"|sed -n "${i}p")
-		name=$(printf "$edids\n"|sed -n "${i}p"|grep -Eo "fc00.*?0a"|sed "s/^fc00//g"|xxd -r -p)
+		if [ $AS == "1" ];then
+			name=$(echo "$names"|sed -n ''$i'p')
+		else
+			name=$(printf "$edids\n"|sed -n "${i}p"|grep -Eo "fc00.*?0a"|sed "s/^fc00//g"|xxd -r -p)
+		fi
 		valid=$(curl -s $url/${vid}/${vid}.pid|grep -o "${pid}:")
 		if [ x"$valid" = x"${pid}:" ];then
 			echo $text1$i$text2$name$text3
