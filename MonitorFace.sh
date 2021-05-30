@@ -116,10 +116,10 @@ icon() {
 			iconutil -c icns -o $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns /tmp/icon.iconset
 			rm -R /tmp/icon.iconset 2>/dev/null
 			if [ ! -f "$1/Icons.plist" ];then
-				echo "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0cDovL3d3dy5hcHBsZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+CjxwbGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+dmVuZG9yczwva2V5PgoJPGRpY3Q+CgkJPGtleT5kaXNwbGF5LWljb248L2tleT4KCQk8c3RyaW5nPnB1YmxpYy5kaXNwbGF5PC9zdHJpbmc+Cgk8L2RpY3Q+CjwvZGljdD4KPC9wbGlzdD4K"|base64 -D > $1/Icons.plist
+				cp /System/Library/Displays/Contents/Resources/Overrides/Icons.plist $1/Icons.plist
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
 			fi
-			/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
-			/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
 			#mv -f /tmp/DisplayProductID-${pid}.png $1/DisplayVendorID-${vid}/
 			echo $hr
 		elif [ x"$valid" != x"${pid}:" -a "$vid" != "610" ];then
