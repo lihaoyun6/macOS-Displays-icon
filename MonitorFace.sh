@@ -98,10 +98,24 @@ icon() {
 			echo $text1$i$text2$name$text3
 			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $downloading
-			curl -s ${url}/${vid}/${pid}.icns > /tmp/DisplayProductID-${pid}.icns
+			curl -s ${url}/${vid}/${pid}.png > /tmp/DisplayProductID-${pid}.png
 			echo $installing
 			mkdir -p $1/DisplayVendorID-${vid}
-			mv -f /tmp/DisplayProductID-${pid}.icns $1/DisplayVendorID-${vid}/
+			mkdir /tmp/icon.iconset
+			sips -z 16 16 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_16x16.png >/dev/null 2>&1
+			sips -z 32 32 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_16x16@2x.png >/dev/null 2>&1
+			sips -z 32 32 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_32x32.png >/dev/null 2>&1
+			sips -z 64 64 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_32x32@2x.png >/dev/null 2>&1
+			sips -z 128 128 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_128x128.png >/dev/null 2>&1
+			sips -z 256 256 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_128x128@2x.png >/dev/null 2>&1
+			sips -z 256 256 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_256x256.png >/dev/null 2>&1
+			sips -z 512 512 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_256x256@2x.png >/dev/null 2>&1
+			sips -z 512 512 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_512x512.png >/dev/null 2>&1
+			cp /tmp/DisplayProductID-${pid}.png /tmp/icon.iconset/icon_512x512@2x.png
+			iconutil -c icns -o $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns /tmp/icon.iconset
+			rm -rf /tmp/DisplayProductID-${pid}.png
+			rm -R icon.iconset
+			#mv -f /tmp/DisplayProductID-${pid}.png $1/DisplayVendorID-${vid}/
 			echo $hr
 		elif [ x"$valid" != x"${pid}:" -a "$vid" != "610" ];then
 			echo $text1$i$text2$name$ntext3
