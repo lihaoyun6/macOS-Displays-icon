@@ -1,5 +1,5 @@
 #!/bin/sh
-version=0.4.2
+version=0.4.3
 localtext_zh_CN() {
 cat <<EOF
 
@@ -101,6 +101,7 @@ icon() {
 			curl -s ${url}/${vid}/${pid}.png > /tmp/DisplayProductID-${pid}.png
 			echo $installing
 			mkdir -p $1/DisplayVendorID-${vid}
+			rm -R /tmp/icon.iconset 2>/dev/null
 			mkdir /tmp/icon.iconset
 			sips -z 16 16 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_16x16.png >/dev/null 2>&1
 			sips -z 32 32 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_16x16@2x.png >/dev/null 2>&1
@@ -113,8 +114,12 @@ icon() {
 			sips -z 512 512 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_512x512.png >/dev/null 2>&1
 			cp /tmp/DisplayProductID-${pid}.png /tmp/icon.iconset/icon_512x512@2x.png
 			iconutil -c icns -o $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns /tmp/icon.iconset
-			rm -rf /tmp/DisplayProductID-${pid}.png
-			rm -R icon.iconset
+			rm -R /tmp/icon.iconset 2>/dev/null
+			if [ ! -f "$1/Icons.plist" ];then
+				echo "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0cDovL3d3dy5hcHBsZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+CjxwbGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+dmVuZG9yczwva2V5PgoJPGRpY3Q+CgkJPGtleT5kaXNwbGF5LWljb248L2tleT4KCQk8c3RyaW5nPnB1YmxpYy5kaXNwbGF5PC9zdHJpbmc+Cgk8L2RpY3Q+CjwvZGljdD4KPC9wbGlzdD4K"|base64 -D > $1/Icons.plist
+			fi
+			/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
+			/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
 			#mv -f /tmp/DisplayProductID-${pid}.png $1/DisplayVendorID-${vid}/
 			echo $hr
 		elif [ x"$valid" != x"${pid}:" -a "$vid" != "610" ];then
