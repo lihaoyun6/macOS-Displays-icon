@@ -1,5 +1,5 @@
 #!/bin/sh
-version=0.4.3
+version=0.4.4
 localtext_zh_CN() {
 cat <<EOF
 
