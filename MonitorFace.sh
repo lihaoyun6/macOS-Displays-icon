@@ -100,11 +100,10 @@ icon() {
 			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $downloading
 			mkdir -p $1/DisplayVendorID-${vid}
-			if [ ! -f "$1/Icons.plist" ];then
-				cp /System/Library/Displays/Contents/Resources/Overrides/Icons.plist $1/Icons.plist
-				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
-				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
-			fi
+			rm -rf $1/Icons.plist 2>/dev/null
+			cp /System/Library/Displays/Contents/Resources/Overrides/Icons.plist $1/Icons.plist
+			/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
+			/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
 			if [[ $valid =~ "*" ]];then
 				valid=$(echo $valid|tr -d '*')
 				curl -s ${url}/${vid}/tiff/${valid}.tiff > $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.tiff
