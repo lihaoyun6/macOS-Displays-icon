@@ -93,14 +93,35 @@ icon() {
 		else
 			name=$(printf "$edids\n"|sed -n "${i}p"|grep -Eo "fc00.*?0a"|sed "s/^fc00//g"|xxd -r -p)
 		fi
-		valid=$(curl -s $url/${vid}/${vid}.pid|grep -o "${pid}:")
-		if [ x"$valid" = x"${pid}:" ];then
+		index=$(curl -s $url/${vid}/${vid}.pid)
+		valid=$(echo "$index"|awk -F':' '{print $1}'|grep -m 1 "${pid}"|awk -F',' '{print $1}')
+		if [ ! -z "$valid" ];then
 			echo $text1$i$text2$name$text3
 			echo $displayname$name$displayvid$vid$displaypid$pid
 			echo $downloading
-			curl -s ${url}/${vid}/${pid}.png > /tmp/DisplayProductID-${pid}.png
-			echo $installing
 			mkdir -p $1/DisplayVendorID-${vid}
+			if [ ! -f "$1/Icons.plist" ];then
+				cp /System/Library/Displays/Contents/Resources/Overrides/Icons.plist $1/Icons.plist
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
+			fi
+			if [[ $valid =~ "*" ]];then
+				valid=$(echo $valid|tr -d '*')
+				curl -s ${url}/${vid}/tiff/${valid}.tiff > $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.tiff
+				read h w x y <<< $(curl -s $url/${vid}/tiff/preview.txt|grep $valid|awk -F':' '{print $2}')
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-resolution-preview-icon string" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:resolution-preview-height integer" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:resolution-preview-width integer" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:resolution-preview-x integer" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:resolution-preview-y integer" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-resolution-preview-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.tiff" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:resolution-preview-height $h" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:resolution-preview-width $w" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:resolution-preview-x $x" $1/Icons.plist 2>/dev/null
+				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:resolution-preview-y $y" $1/Icons.plist 2>/dev/null
+			fi
+			curl -s ${url}/${vid}/${valid}.png > /tmp/DisplayProductID-${pid}.png
+			echo $installing
 			rm -R /tmp/icon.iconset 2>/dev/null
 			mkdir /tmp/icon.iconset
 			sips -z 16 16 /tmp/DisplayProductID-${pid}.png --out /tmp/icon.iconset/icon_16x16.png >/dev/null 2>&1
@@ -115,11 +136,6 @@ icon() {
 			cp /tmp/DisplayProductID-${pid}.png /tmp/icon.iconset/icon_512x512@2x.png
 			iconutil -c icns -o $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns /tmp/icon.iconset
 			rm -R /tmp/icon.iconset 2>/dev/null
-			if [ ! -f "$1/Icons.plist" ];then
-				cp /System/Library/Displays/Contents/Resources/Overrides/Icons.plist $1/Icons.plist
-				/usr/libexec/PlistBuddy -c "Add :vendors:${vid}:products:${pid}:display-icon string" $1/Icons.plist 2>/dev/null
-				/usr/libexec/PlistBuddy -c "Set :vendors:${vid}:products:${pid}:display-icon $1/DisplayVendorID-${vid}/DisplayProductID-${pid}.icns" $1/Icons.plist 2>/dev/null
-			fi
 			#mv -f /tmp/DisplayProductID-${pid}.png $1/DisplayVendorID-${vid}/
 			echo $hr
 		elif [ x"$valid" != x"${pid}:" -a "$vid" != "610" ];then
