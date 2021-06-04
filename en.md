@@ -12,8 +12,7 @@ This project is a icon database of many displays.You can show it in macOS's "Abo
 ## Rules for naming files
 1. Nameing the icon file by the PID of monitor, e.g. "a0be.png"
 2. Put the "{PID}.icns" into a folder that named by the VID of monitor, e.g. "10ac/a0be.png"
-3. Append the PID and the name of monitor to the files "{VID}.pid" in VID folder  
-  using this format: "PID:The name of monitor", e.g. "a0be:DELL P2415Q"
+3. Please tell me the model of the monitor, e.g. "DELL P2415Q"
 
 ### Sample:
-![img](https://raw.githubusercontent.com/lihaoyun6/macOS-Displays-icon/master/10ac/a0be.icns)
+![img](https://raw.githubusercontent.com/lihaoyun6/macOS-Displays-icon/master/10ac/a0be.png)
