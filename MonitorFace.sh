@@ -151,12 +151,13 @@ icon() {
 	echo $alldone
 }
 
-add=$(/usr/bin/curl -s cip.cc|grep -o -m1 "中国")
-if [ x"$add" = x"中国" ];then
-	url="https://gitee.com/lihaoyun/macOS-Displays-icon/raw/master"
-else
-	url="https://raw.githubusercontent.com/lihaoyun6/macOS-Displays-icon/master"
-fi
+#add=$(/usr/bin/curl -s cip.cc|grep -o -m1 "中国")
+#if [ x"$add" = x"中国" ];then
+#	url="https://gitee.com/lihaoyun/macOS-Displays-icon/raw/master"
+#else
+#	url="https://raw.githubusercontent.com/lihaoyun6/macOS-Displays-icon/master"
+#fi
+url="https://cdn.jsdelivr.net/gh/lihaoyun6/macOS-Displays-icon"
 lang=$(osascript -e 'user locale of (get system info)')
 #lang=qqq
 if [ x"$lang" = x"zh_CN" ];then
