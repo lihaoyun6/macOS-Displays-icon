@@ -1,5 +1,5 @@
 # macOS-Displays-icon
-[English Version](./en.md)  
+[English Version](./README_en.md)  
 ## 关于此项目 
 本项目是一个显示器设备图标数据库. 用于在macOS系统的"关于本机" > "显示器"界面中显示真实的设备显示器外观图标.
 
@@ -17,4 +17,6 @@
 3. 提交时请注明显示器型号, 例如: "Dell P2415Q"
 
 ### 样例:
-![img](https://raw.githubusercontent.com/lihaoyun6/macOS-Displays-icon/master/10ac/a0be.png)
+<p align="center">
+<img src="./10ac/a0be.png" width="512"/>
+</p>
